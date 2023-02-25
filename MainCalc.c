@@ -34,8 +34,8 @@ int FDaydiff(int date1,int date2)
 	daysbefore+=First2digit(date1); 
 	
 	//days in year after second date
-	for(int h=Monthdigit(date2)-1;h<=11;h++) daysafter+=Months[h];//WHY TF DOES <= WORK AND NOT ==????????????????????
-	daysafter-=Months[Monthdigit(date2)]+First2digit(date2);
+	for(int h=Monthdigit(date2);h<=11;h++) daysafter+=Months[h];//WHY TF DOES <= WORK AND NOT ==????????????????????
+	daysafter-=First2digit(date2);
 
 	days=(365*(Yeareturn(date2)-Yeareturn(date1)+1))-daysbefore-daysafter;
 	return days;
@@ -47,29 +47,42 @@ int main(int argc, char *argv[])
     int liquid2=0,inve2=0,salary2=0,date2;
 	int daydiff;
 	double growth=0;
-	//FILE * out = fopen("Bnk.txt","w");
-	FILE * in = fopen("Bnk.txt","r");
 
-	//check file exist ||out==NULL
+	//read numbers in file and compare the interest rate
+	FILE * in = fopen("Bnk.txt","r+");
 	if (in==NULL) printf("ERROR Unable to open");
 
+	//go back one line
+	int y = 0;
+	for(char x;x != '\n';y--)
+	{
+		fseek(in,y-1,EOF);
+		fscanf(in,"%c",&x);
+	}
+	fseek(in,y-1,SEEK_END);
+
+	//scan last line of data
+	fscanf(in,"%d %d %d %d",&liquid,&inve,&salary,&date1);
+	fclose(in);
+	
 	//ask for new numbers
 	printf("Enter The numbers liquid/invest/salary/date: \n");
 	scanf("%d %d %d %d", &liquid2, &inve2, &salary2, &date2);
 	
-    //read numbers in file and compare the interest rate
-	fscanf(in,"%d %d %d %d",&liquid,&inve,&salary,&date1);
+	//print change
     printf("Change in liq/inv/sal: \n             %d %d %d",liquid2-liquid,inve2-inve,salary2-salary);
-	
+
 	//Calculating Date change
 	daydiff=FDaydiff(date1,date2);
 	printf("\nDifference in days: %4d", daydiff);
 
-	//write numbers to file in the next row
-	
-	//other cool calculations i might want
+	//daily growth
+	growth=(liquid2-liquid+inve2-inve)/((double)liquid+(double)inve);
+	growth=100*growth/daydiff;
+	printf("\ngrowth daily = %2.3f",growth);
 
-	//close all files
-	fclose(in);
-	//fclose(out);
+	FILE * out = fopen("Bnk.txt","a+");
+	//write numbers to file in previous row
+	fprintf(out,"\n%d %d %d %d",liquid2,inve2,salary2,date2);
+	fclose(out);
 }
