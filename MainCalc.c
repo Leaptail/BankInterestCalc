@@ -41,10 +41,30 @@ int FDaydiff(int date1,int date2)
 	return days;
 }
 
+int checkdate(int date)
+{
+	int Months[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+	if(date<1000000)
+	{
+		return 0;
+	}
+	else if(Monthdigit(date)<13)
+	{
+		if(First2digit(date)<=Months[Monthdigit(date)-1])
+		{
+			return 1;
+		}
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	int liquid=0,inve=0,salary=0,date1;
-    int liquid2=0,inve2=0,salary2=0,date2;
+    int liquid2=0,inve2=0,salary2=0,date2=0;
 	int daydiff;
 	double growth=0;
 
@@ -65,10 +85,17 @@ int main(int argc, char *argv[])
 	fscanf(in,"%d %d %d %d",&liquid,&inve,&salary,&date1);
 	fclose(in);
 	
+	label_input:
 	//ask for new numbers
-	printf("Enter The numbers liquid/invest/salary/date: \n");
-	scanf("%d %d %d %d", &liquid2, &inve2, &salary2, &date2);
+	do{
+		printf("Enter The numbers liquid/invest/salary/date: \n");
+		scanf("%d %d %d %d", &liquid2, &inve2, &salary2, &date2);
+	} while(checkdate(date2)==0);
 	
+	//while(liquid2==0||inve2==0||salary2==0||date2==0);
+	//check date validity
+	//if(checkdate(date2)==0) goto label_input; 
+
 	//print change
     printf("Change in liq/inv/sal: \n             %d %d %d",liquid2-liquid,inve2-inve,salary2-salary);
 
