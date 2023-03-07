@@ -44,7 +44,7 @@ int FDaydiff(int date1,int date2)
 int checkdate(int date)
 {
 	int Months[12]={31,28,31,30,31,30,31,31,30,31,30,31};
-	if(date<1000000)
+	if(date<1010001)
 	{
 		return 0;
 	}
@@ -73,13 +73,8 @@ int main(int argc, char *argv[])
 	if (in==NULL) printf("ERROR Unable to open");
 
 	//go back one line
-	int y = 0;
-	for(char x;x != '\n';y--)
-	{
-		fseek(in,y-1,EOF);
-		fscanf(in,"%c",&x);
-	}
-	fseek(in,y-1,SEEK_END);
+	int y = -32;
+	fseek(in,y,SEEK_END);
 
 	//scan last line of data
 	fscanf(in,"%d %d %d %d",&liquid,&inve,&salary,&date1);
@@ -88,7 +83,7 @@ int main(int argc, char *argv[])
 	label_input:
 	//ask for new numbers
 	do{
-		printf("Enter The numbers liquid/invest/salary/date: \n");
+		printf("Enter The numbers liquid/invest/salary/date (ddyymmmm): \n");
 		scanf("%d %d %d %d", &liquid2, &inve2, &salary2, &date2);
 	} while(checkdate(date2)==0);
 	
@@ -110,6 +105,6 @@ int main(int argc, char *argv[])
 
 	FILE * out = fopen("Bnk.txt","a+");
 	//write numbers to file in previous row
-	fprintf(out,"\n%d %d %d %d",liquid2,inve2,salary2,date2);
+	fprintf(out,"\n%7d %7d %7d %8d",liquid2,inve2,salary2,date2);
 	fclose(out);
 }
